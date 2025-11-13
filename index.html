@@ -1,0 +1,1472 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Dâu</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #333;
+        }
+
+        .login-screen {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .login-box {
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            width: 100%;
+            max-width: 360px;
+        }
+
+        .login-box h1 {
+            font-size: 24px;
+            margin-bottom: 30px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #333;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background: #555;
+        }
+
+        .error {
+            color: #d32f2f;
+            font-size: 14px;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .app-container {
+            display: none;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .app-container.active {
+            display: block;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 1px solid #e0e0e0;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .logout-btn {
+            width: auto;
+            padding: 8px 16px;
+            background: #fff;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .tab {
+            padding: 12px 20px;
+            background: none;
+            border: none;
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+            font-size: 15px;
+            color: #666;
+            transition: all 0.2s;
+        }
+
+        .tab.active {
+            color: #333;
+            border-bottom-color: #333;
+            font-weight: 500;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .card {
+            background: white;
+            padding: 24px;
+            border-radius: 8px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+            margin-bottom: 20px;
+        }
+
+        .card h2 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #555;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+            font-family: inherit;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .btn-primary {
+            background: #333;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            width: auto;
+        }
+
+        .btn-primary:hover {
+            background: #555;
+        }
+
+        .btn-secondary {
+            background: #f5f5f5;
+            color: #333;
+            padding: 8px 16px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            width: auto;
+            margin-left: 8px;
+        }
+
+        .activity-list,
+        .goal-list,
+        .expense-list,
+        .journal-list {
+            margin-top: 20px;
+        }
+
+        .item {
+            padding: 16px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .item-content {
+            flex: 1;
+        }
+
+        .item-title {
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .item-meta {
+            font-size: 13px;
+            color: #666;
+        }
+
+        .item-actions button {
+            background: none;
+            border: 1px solid #ddd;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            width: auto;
+            margin-left: 6px;
+        }
+
+        .chart-container {
+            margin-top: 20px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #333;
+            transition: width 0.3s;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+
+        .cashflow-section {
+            margin-bottom: 30px;
+        }
+
+        .cashflow-summary {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 6px;
+            margin-top: 20px;
+        }
+
+        .cashflow-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            font-size: 15px;
+        }
+
+        .cashflow-row.total {
+            border-top: 2px solid #333;
+            margin-top: 12px;
+            padding-top: 12px;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .cashflow-row.deficit {
+            color: #d32f2f;
+        }
+
+        .cashflow-row.surplus {
+            color: #388e3c;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .tabs {
+                overflow-x: auto;
+            }
+
+            .tab {
+                white-space: nowrap;
+            }
+        }
+
+        .habit-item {
+            background: #fff;
+            border: 2px solid #f0f0f0;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: border-color 0.2s;
+        }
+
+        .habit-item:hover {
+            border-color: #e0e0e0;
+        }
+
+        .habit-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .habit-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .habit-icon {
+            font-size: 28px;
+        }
+
+        .habit-progress {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .habit-streak {
+            background: #fff9e6;
+            color: #f59e0b;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .habit-days {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .day-box {
+            flex: 1;
+            aspect-ratio: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #e8e8e8;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: #fafafa;
+        }
+
+        .day-box:hover {
+            border-color: #d0d0d0;
+            transform: translateY(-2px);
+        }
+
+        .day-box.completed {
+            background: #e8f5e9;
+            border-color: #66bb6a;
+        }
+
+        .day-box.today {
+            border-color: #333;
+            background: #fff;
+        }
+
+        .day-label {
+            font-size: 11px;
+            color: #999;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .day-date {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .day-box.completed .day-date {
+            color: #2e7d32;
+        }
+
+        .day-check {
+            font-size: 20px;
+            margin-top: 4px;
+        }
+
+        .habit-goal {
+            margin-top: 12px;
+            padding: 12px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .habit-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .habit-actions button {
+            flex: 1;
+            padding: 8px;
+            font-size: 13px;
+        }
+
+        @media (max-width: 768px) {
+            .habit-days {
+                gap: 4px;
+            }
+            
+            .day-box {
+                border-radius: 8px;
+            }
+            
+            .day-date {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div class="login-screen" id="loginScreen">
+        <div class="login-box">
+            <h1>🌸 Quản Lý Dâu</h1>
+            <input type="password" id="passwordInput" placeholder="Nhập mật khẩu" />
+            <button onclick="login()">Đăng Nhập</button>
+            <div class="error" id="loginError"></div>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div class="app-container" id="appContainer">
+        <div class="header">
+            <h1>🌸 Quản Lý Dâu</h1>
+            <button class="logout-btn" onclick="logout()">Đăng Xuất</button>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('time')">⏰ Thời Gian</button>
+            <button class="tab" onclick="switchTab('habits')">✨ Thói Quen</button>
+            <button class="tab" onclick="switchTab('cashflow')">💰 Dòng Tiền</button>
+            <button class="tab" onclick="switchTab('journal')">📝 Nhật Ký</button>
+        </div>
+
+        <!-- Time Management Tab -->
+        <div class="tab-content active" id="timeTab">
+            <div class="card">
+                <h2>Ghi Nhận Hoạt Động</h2>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Loại hoạt động</label>
+                        <select id="activityType">
+                            <option value="work">Làm việc</option>
+                            <option value="study">Học tập</option>
+                            <option value="sleep">Ngủ</option>
+                            <option value="family">Gia đình</option>
+                            <option value="relax">Giải trí</option>
+                            <option value="exercise">Thể dục</option>
+                            <option value="other">Khác</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Ngày</label>
+                        <input type="date" id="activityDate" />
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Từ giờ</label>
+                        <input type="time" id="activityStart" />
+                    </div>
+                    <div class="form-group">
+                        <label>Đến giờ</label>
+                        <input type="time" id="activityEnd" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Ghi chú</label>
+                    <input type="text" id="activityNote" placeholder="Mô tả ngắn..." />
+                </div>
+                <button class="btn-primary" onclick="addActivity()">Thêm Hoạt Động</button>
+            </div>
+
+            <div class="card">
+                <h2>Thống Kê Thời Gian</h2>
+                <div class="stats-grid" id="timeStats"></div>
+            </div>
+
+            <div class="card">
+                <h2>Lịch Sử Hoạt Động</h2>
+                <div class="activity-list" id="activityList"></div>
+            </div>
+        </div>
+
+       <!-- Habits Tab -->
+        <div class="tab-content" id="habitsTab">
+            <div class="card">
+                <h2>Tạo Thói Quen Mới</h2>
+                <div class="form-group">
+                    <label>Tên thói quen</label>
+                    <input type="text" id="habitName" />
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Biểu tượng</label>
+                        <select id="habitIcon">
+                            <option value="💪">💪 Thể dục</option>
+                            <option value="📚">📚 Đọc sách</option>
+                            <option value="💧">💧 Uống nước</option>
+                            <option value="🧘">🧘 Thiền</option>
+                            <option value="✍️">✍️ Viết nhật ký</option>
+                            <option value="🎯">🎯 Học tập</option>
+                            <option value="🌅">🌅 Dậy sớm</option>
+                            <option value="🥗">🥗 Ăn healthy</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Ngày bắt đầu</label>
+                        <input type="date" id="habitStartDate" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Mục tiêu</label>
+                    <textarea id="habitGoal" placeholder="Mô tả ngắn về mục tiêu của bạn..."></textarea>
+                </div>
+                <button class="btn-primary" onclick="addHabit()">Tạo Thói Quen</button>
+            </div>
+
+            <div class="card">
+                <h2>Thói Quen Của Tôi</h2>
+                <div class="habit-list" id="habitList"></div>
+            </div>
+        </div>
+
+        <!-- Cashflow Tab -->
+        <div class="tab-content" id="cashflowTab">
+            <!-- Forecast Section -->
+            <div class="cashflow-section">
+                <div class="card">
+                    <h2>Dự Phóng Dòng Tiền</h2>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Tiền mặt hiện tại</label>
+                            <input type="number" id="currentCash" placeholder="VNĐ" />
+                        </div>
+                        <div class="form-group">
+                            <label>Tiền bank hiện tại</label>
+                            <input type="number" id="currentBank" placeholder="VNĐ" />
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Sale trung bình/ngày</label>
+                            <input type="number" id="avgDailySales" placeholder="VNĐ" />
+                        </div>
+                        <div class="form-group">
+                            <label>Số ngày đến khi phải trả</label>
+                            <input type="number" id="daysUntilPayment" placeholder="Số ngày" />
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #e0e0e0;">
+                        <h3 style="font-size: 16px; margin-bottom: 16px;">Các khoản phải chi sắp tới</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Tên khoản chi</label>
+                                <input type="text" id="upcomingExpenseName" placeholder="Ví dụ: Lương nhân viên" />
+                            </div>
+                            <div class="form-group">
+                                <label>Số tiền</label>
+                                <input type="number" id="upcomingExpenseAmount" placeholder="VNĐ" />
+                            </div>
+                        </div>
+                        <button class="btn-secondary" onclick="addUpcomingExpense()">+ Thêm Khoản Chi</button>
+                        <div id="upcomingExpensesList" style="margin-top: 16px;"></div>
+                    </div>
+                    
+                    <button class="btn-primary" onclick="calculateForecast()" style="margin-top: 20px;">Tính Toán</button>
+                    <div class="cashflow-summary" id="forecastResult"></div>
+                </div>
+            </div>
+
+            <!-- Expense Tracking Section -->
+            <div class="cashflow-section">
+                <div class="card">
+                    <h2>Ghi Chi Phí Thực Tế</h2>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Khoản mục</label>
+                            <select id="expenseCategory">
+                                <option value="electric">Điện</option>
+                                <option value="salary">Lương</option>
+                                <option value="beef">Bò</option>
+                                <option value="sauce">Tương</option>
+                                <option value="danang">Hàng Đà Nẵng</option>
+                                <option value="cheese">Phô mai</option>
+                                <option value="box">Hộp</option>
+                                <option value="other">Khác</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Ngày chi</label>
+                            <input type="date" id="expenseDate" />
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Số tiền</label>
+                            <input type="number" id="expenseAmount" placeholder="VNĐ" />
+                        </div>
+                        <div class="form-group">
+                            <label>Phương thức</label>
+                            <select id="expenseMethod">
+                                <option value="cash">Tiền mặt</option>
+                                <option value="bank">Chuyển khoản</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Ghi chú</label>
+                        <input type="text" id="expenseNote" placeholder="Chi tiết thêm..." />
+                    </div>
+                    <button class="btn-primary" onclick="addExpense()">Thêm Chi Phí</button>
+                </div>
+
+                <div class="card">
+                    <h2>Lịch Sử Chi Phí</h2>
+                    <div class="expense-list" id="expenseList"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Journal Tab -->
+        <div class="tab-content" id="journalTab">
+            <div class="card">
+                <h2>Viết Nhật Ký</h2>
+                <div class="form-group">
+                    <label>Tiêu đề</label>
+                    <input type="text" id="journalTitle" placeholder="Chủ đề hôm nay..." />
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Tag</label>
+                        <select id="journalTag">
+                            <option value="idea">Ý tưởng kinh doanh</option>
+                            <option value="marketing">Marketing</option>
+                            <option value="lesson">Bài học cuộc sống</option>
+                            <option value="reflection">Suy ngẫm</option>
+                            <option value="analysis">Phân tích</option>
+                            <option value="other">Khác</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Ngày</label>
+                        <input type="date" id="journalDate" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Nội dung</label>
+                    <textarea id="journalContent" placeholder="Viết suy nghĩ của bạn..." style="min-height: 200px;"></textarea>
+                </div>
+                <button class="btn-primary" onclick="addJournal()">Lưu Nhật Ký</button>
+            </div>
+
+            <div class="card">
+                <h2>Nhật Ký Của Tôi</h2>
+                <div class="journal-list" id="journalList"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const SUPABASE_URL = 'https://oindszamzepyplumfxga.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9pbmRzemFtemVweXBsdW1meGdhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMwNDM1MDEsImV4cCI6MjA3ODYxOTUwMX0.ONATfa2UPTAhuwuAovbu36bWCPjKzVPIgtA0RiIVEgM';
+        const HARDCODED_PASSWORD = 'dau2024';
+
+        let currentUser = null;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            setDefaultDates();
+            checkLogin();
+        });
+
+        function setDefaultDates() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('activityDate').value = today;
+            document.getElementById('habitStartDate').value = today;
+            document.getElementById('expenseDate').value = today;
+            document.getElementById('journalDate').value = today;
+        }
+
+        // Login/Logout
+        function login() {
+            const password = document.getElementById('passwordInput').value;
+            if (password === HARDCODED_PASSWORD) {
+                localStorage.setItem('dauAuth', 'true');
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('appContainer').classList.add('active');
+                loadAllData();
+            } else {
+                document.getElementById('loginError').textContent = 'Mật khẩu không đúng!';
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('dauAuth');
+            location.reload();
+        }
+
+        function checkLogin() {
+            if (localStorage.getItem('dauAuth') === 'true') {
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('appContainer').classList.add('active');
+                loadAllData();
+            }
+        }
+
+        // Tab Switching
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tabName + 'Tab').classList.add('active');
+            
+            if (tabName === 'time') loadActivities();
+            if (tabName === 'habits') loadHabits();
+            if (tabName === 'cashflow') loadExpenses();
+            if (tabName === 'journal') loadJournals();
+        }
+
+        // Supabase API calls
+        async function supabaseRequest(endpoint, method = 'GET', data = null) {
+            const options = {
+                method,
+                headers: {
+                'apikey': SUPABASE_ANON_KEY,
+                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                'Content-Type': 'application/json'
+                }
+            };
+
+            if (data && method !== 'GET') {
+                options.body = JSON.stringify(data);
+            }
+
+            const response = await fetch(`${SUPABASE_URL}/rest/v1/${endpoint}`, options);
+
+            // Nếu Supabase trả về No Content (204) → không có body để parse
+            if (response.status === 204) {
+                return { success: true, message: 'No content' };
+            }
+
+            // Thử đọc text rồi parse an toàn
+            const text = await response.text();
+            if (!text) return { success: true, message: 'Empty response' };
+
+            try {
+                return JSON.parse(text);
+            } catch (e) {
+                console.error('⚠️ Invalid JSON from Supabase:', text);
+                return { success: false, error: 'Invalid JSON response' };
+            }
+            }
+
+        // Time Management
+        async function addActivity() {
+            const type = document.getElementById('activityType').value;
+            const date = document.getElementById('activityDate').value;
+            const start = document.getElementById('activityStart').value;
+            const end = document.getElementById('activityEnd').value;
+            const note = document.getElementById('activityNote').value;
+
+            if (!date || !start || !end) {
+                alert('Vui lòng điền đầy đủ thông tin!');
+                return;
+            }
+
+            const startTime = new Date(`${date}T${start}`);
+            const endTime = new Date(`${date}T${end}`);
+            let hours = (endTime - startTime) / (1000 * 60 * 60);
+            
+            if (hours < 0) hours += 24;
+
+            const activity = {
+                type,
+                date,
+                start_time: start,
+                end_time: end,
+                hours: hours.toFixed(2),
+                note
+            };
+
+            try {
+                await supabaseRequest('activities', 'POST', activity);
+                alert('Đã thêm hoạt động!');
+                document.getElementById('activityNote').value = '';
+                loadActivities();
+            } catch (error) {
+                alert('Lỗi: ' + error.message);
+            }
+        }
+
+       let currentDay = new Date().toISOString().split('T')[0]; // Lưu ngày hiện tại
+
+        async function loadActivities() {
+            try {
+                const today = new Date().toISOString().split('T')[0]; // yyyy-mm-dd
+                currentDay = today; // Cập nhật ngày hiện tại
+
+                const activities = await supabaseRequest(`activities?date=eq.${today}&order=start_time.desc`);
+                const list = document.getElementById('activityList');
+                
+                if (!activities || activities.length === 0) {
+                    list.innerHTML = '<div class="empty-state">Chưa có hoạt động nào hôm nay</div>';
+                } else {
+                    list.innerHTML = activities.map(a => `
+                        <div class="item">
+                            <div class="item-content">
+                                <div class="item-title">${getActivityLabel(a.type)} - ${a.hours}h</div>
+                                <div class="item-meta">${a.date} | ${a.start_time} - ${a.end_time} ${a.note ? '| ' + a.note : ''}</div>
+                            </div>
+                            <div class="item-actions">
+                                <button onclick="deleteActivity(${a.id})">Xóa</button>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+
+                calculateTimeStats(activities);
+            } catch (error) {
+                console.error('Error loading activities:', error);
+            }
+        }
+
+        // Kiểm tra ngày mới mỗi phút
+        setInterval(() => {
+            const today = new Date().toISOString().split('T')[0];
+            if (today !== currentDay) {
+                loadActivities(); // Tự refresh khi qua ngày mới
+            }
+        }, 60 * 1000); // kiểm tra mỗi 60 giây
+
+
+        function calculateTimeStats(activities) {
+            const stats = {};
+            let total = 0;
+
+            activities.forEach(a => {
+                if (!stats[a.type]) stats[a.type] = 0;
+                stats[a.type] += parseFloat(a.hours);
+                total += parseFloat(a.hours);
+            });
+
+            const statsDiv = document.getElementById('timeStats');
+            statsDiv.innerHTML = Object.entries(stats).map(([type, hours]) => {
+                const percent = ((hours / total) * 100).toFixed(1);
+                return `
+                    <div class="stat-card">
+                        <div class="stat-value">${hours.toFixed(1)}h</div>
+                        <div class="stat-label">${getActivityLabel(type)}</div>
+                        <div class="stat-label">${percent}%</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function getActivityLabel(type) {
+            const labels = {
+                work: 'Làm việc',
+                study: 'Học tập',
+                sleep: 'Ngủ',
+                family: 'Gia đình',
+                relax: 'Giải trí',
+                exercise: 'Thể dục',
+                other: 'Khác'
+            };
+            return labels[type] || type;
+        }
+
+        async function deleteActivity(id) {
+            if (confirm('Xóa hoạt động này?')) {
+                await supabaseRequest(`activities?id=eq.${id}`, 'DELETE');
+                loadActivities();
+            }
+        }
+
+        // Habit Tracking
+        async function addHabit() {
+            const name = document.getElementById('habitName').value;
+            const icon = document.getElementById('habitIcon').value;
+            const startDate = document.getElementById('habitStartDate').value;
+            const goal = document.getElementById('habitGoal').value;
+
+            if (!name || !startDate) {
+                alert('Vui lòng điền tên thói quen và ngày bắt đầu!');
+                return;
+            }
+
+            const habit = {
+                name,
+                icon,
+                start_date: startDate,
+                goal,
+                completions: JSON.stringify([]),
+                streak: 0
+            };
+
+            try {
+                await supabaseRequest('habits', 'POST', habit);
+                alert('Đã tạo thói quen mới!');
+                document.getElementById('habitName').value = '';
+                document.getElementById('habitGoal').value = '';
+                loadHabits();
+            } catch (error) {
+                alert('Lỗi: ' + error.message);
+            }
+        }
+
+        async function loadHabits() {
+            try {
+                const habits = await supabaseRequest('habits?order=created_at.desc');
+                const list = document.getElementById('habitList');
+                
+                if (!habits || habits.length === 0) {
+                    list.innerHTML = '<div class="empty-state">Chưa có thói quen nào. Hãy tạo thói quen đầu tiên! 🌱</div>';
+                } else {
+                    list.innerHTML = habits.map(h => renderHabit(h)).join('');
+                }
+            } catch (error) {
+                console.error('Error loading habits:', error);
+            }
+        }
+
+        function renderHabit(habit) {
+            const completions = JSON.parse(habit.completions || '[]');
+            const today = new Date();
+            const days = [];
+            
+            // Generate 7 days starting from today
+            for (let i = 0; i < 7; i++) {
+                const date = new Date(today);
+                date.setDate(date.getDate() + i);
+                const dateStr = date.toISOString().split('T')[0];
+                const isCompleted = completions.includes(dateStr);
+                const isToday = i === 0;
+                
+                const dayName = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'][date.getDay()];
+                
+                days.push(`
+                    <div class="day-box ${isCompleted ? 'completed' : ''} ${isToday ? 'today' : ''}" 
+                        onclick="toggleHabitDay(${habit.id}, '${dateStr}')">
+                        <div class="day-label">${dayName}</div>
+                        <div class="day-date">${date.getDate()}</div>
+                        ${isCompleted ? '<div class="day-check">✓</div>' : ''}
+                    </div>
+                `);
+            }
+            
+            // Calculate streak and progress
+            const startDate = new Date(habit.start_date);
+            const daysSinceStart = Math.floor((today - startDate) / (1000 * 60 * 60 * 24)) + 1;
+            const progress = Math.min(daysSinceStart, 30);
+            const completionRate = completions.length > 0 ? Math.round((completions.length / progress) * 100) : 0;
+            
+            return `
+                <div class="habit-item">
+                    <div class="habit-header">
+                        <div class="habit-title">
+                            <span class="habit-icon">${habit.icon}</span>
+                            <span>${habit.name}</span>
+                        </div>
+                        <div class="habit-progress">
+                            <span class="habit-streak">🔥 ${habit.streak} ngày</span>
+                            <span>${progress}/30 ngày</span>
+                        </div>
+                    </div>
+                    
+                    ${habit.goal ? `<div class="habit-goal">🎯 ${habit.goal}</div>` : ''}
+                    
+                    <div class="habit-days">
+                        ${days.join('')}
+                    </div>
+                    
+                    <div style="margin-top: 12px; font-size: 13px; color: #666; text-align: center;">
+                        Tỷ lệ hoàn thành: ${completionRate}% • ${completions.length} lần đã hoàn thành
+                    </div>
+                    
+                    <div class="habit-actions">
+                        <button class="btn-secondary" onclick="deleteHabit(${habit.id})">Xóa Thói Quen</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        async function toggleHabitDay(habitId, date) {
+            try {
+                const habits = await supabaseRequest(`habits?id=eq.${habitId}`);
+                const habit = habits[0];
+                let completions = JSON.parse(habit.completions || '[]');
+                
+                if (completions.includes(date)) {
+                    completions = completions.filter(d => d !== date);
+                } else {
+                    completions.push(date);
+                    completions.sort();
+                }
+                
+                // Calculate streak
+                const streak = calculateStreak(completions);
+                
+                await supabaseRequest(`habits?id=eq.${habitId}`, 'PATCH', {
+                    completions: JSON.stringify(completions),
+                    streak: streak
+                });
+                
+                loadHabits();
+            } catch (error) {
+                console.error('Error toggling habit:', error);
+            }
+        }
+
+        function calculateStreak(completions) {
+            if (completions.length === 0) return 0;
+            
+            const today = new Date().toISOString().split('T')[0];
+            const sortedDates = completions.sort().reverse();
+            
+            // Check if today or yesterday is completed
+            const lastDate = sortedDates[0];
+            const yesterday = new Date();
+            yesterday.setDate(yesterday.getDate() - 1);
+            const yesterdayStr = yesterday.toISOString().split('T')[0];
+            
+            if (lastDate !== today && lastDate !== yesterdayStr) return 0;
+            
+            let streak = 1;
+            for (let i = 1; i < sortedDates.length; i++) {
+                const current = new Date(sortedDates[i]);
+                const previous = new Date(sortedDates[i - 1]);
+                const diffDays = (previous - current) / (1000 * 60 * 60 * 24);
+                
+                if (diffDays === 1) {
+                    streak++;
+                } else {
+                    break;
+                }
+            }
+            
+            return streak;
+        }
+
+        async function deleteHabit(id) {
+            if (confirm('Xóa thói quen này? Dữ liệu sẽ mất vĩnh viễn.')) {
+                await supabaseRequest(`habits?id=eq.${id}`, 'DELETE');
+                loadHabits();
+            }
+        }
+        // Cashflow Management
+        let upcomingExpenses = [];
+
+        function addUpcomingExpense() {
+            const name = document.getElementById('upcomingExpenseName').value;
+            const amount = parseFloat(document.getElementById('upcomingExpenseAmount').value);
+
+            if (!name || !amount) {
+                alert('Vui lòng nhập tên và số tiền!');
+                return;
+            }
+
+            upcomingExpenses.push({ name, amount, id: Date.now() });
+            document.getElementById('upcomingExpenseName').value = '';
+            document.getElementById('upcomingExpenseAmount').value = '';
+            
+            displayUpcomingExpenses();
+            saveForecastData();
+        }
+
+        function displayUpcomingExpenses() {
+            const list = document.getElementById('upcomingExpensesList');
+            
+            if (upcomingExpenses.length === 0) {
+                list.innerHTML = '';
+                return;
+            }
+
+            const total = upcomingExpenses.reduce((sum, e) => sum + e.amount, 0);
+            
+            list.innerHTML = `
+                <div style="border: 1px solid #e0e0e0; border-radius: 6px; overflow: hidden;">
+                    ${upcomingExpenses.map(e => `
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid #f0f0f0;">
+                            <div>
+                                <div style="font-weight: 500;">${e.name}</div>
+                                <div style="font-size: 13px; color: #666;">${formatCurrency(e.amount)}</div>
+                            </div>
+                            <button onclick="removeUpcomingExpense(${e.id})" style="padding: 4px 10px; font-size: 12px; background: #f5f5f5; border: 1px solid #ddd; border-radius: 4px; cursor: pointer; width: auto;">Xóa</button>
+                        </div>
+                    `).join('')}
+                    <div style="display: flex; justify-content: space-between; padding: 12px; background: #f9f9f9; font-weight: 600;">
+                        <span>Tổng khoản phải chi:</span>
+                        <span>${formatCurrency(total)}</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        function removeUpcomingExpense(id) {
+            upcomingExpenses = upcomingExpenses.filter(e => e.id !== id);
+            displayUpcomingExpenses();
+            saveForecastData();
+        }
+
+        function calculateForecast() {
+            const cash = parseFloat(document.getElementById('currentCash').value) || 0;
+            const bank = parseFloat(document.getElementById('currentBank').value) || 0;
+            const avgSales = parseFloat(document.getElementById('avgDailySales').value) || 0;
+            const days = parseFloat(document.getElementById('daysUntilPayment').value) || 0;
+            const totalExpenses = upcomingExpenses.reduce((sum, e) => sum + e.amount, 0);
+
+            const currentTotal = cash + bank;
+            const projectedRevenue = avgSales * days;
+            const projectedTotal = currentTotal + projectedRevenue;
+            const balance = projectedTotal - totalExpenses;
+
+            const resultDiv = document.getElementById('forecastResult');
+            
+            let expenseDetails = '';
+            if (upcomingExpenses.length > 0) {
+                expenseDetails = upcomingExpenses.map(e => `
+                    <div class="cashflow-row" style="padding-left: 20px; font-size: 14px; color: #666;">
+                        <span>• ${e.name}:</span>
+                        <span>${formatCurrency(e.amount)}</span>
+                    </div>
+                `).join('');
+            }
+
+            resultDiv.innerHTML = `
+                <div class="cashflow-row">
+                    <span>Tiền mặt hiện tại:</span>
+                    <span>${formatCurrency(cash)}</span>
+                </div>
+                <div class="cashflow-row">
+                    <span>Tiền bank hiện tại:</span>
+                    <span>${formatCurrency(bank)}</span>
+                </div>
+                <div class="cashflow-row">
+                    <span>Tổng hiện tại:</span>
+                    <span>${formatCurrency(currentTotal)}</span>
+                </div>
+                <div class="cashflow-row">
+                    <span>Doanh thu dự kiến (${days} ngày):</span>
+                    <span>${formatCurrency(projectedRevenue)}</span>
+                </div>
+                <div class="cashflow-row">
+                    <span>Tổng dự kiến:</span>
+                    <span>${formatCurrency(projectedTotal)}</span>
+                </div>
+                <div class="cashflow-row">
+                    <span>Tổng khoản phải chi:</span>
+                    <span>${formatCurrency(totalExpenses)}</span>
+                </div>
+                ${expenseDetails}
+                <div class="cashflow-row total ${balance >= 0 ? 'surplus' : 'deficit'}">
+                    <span>${balance >= 0 ? 'Dư:' : 'Thiếu:'}</span>
+                    <span>${formatCurrency(Math.abs(balance))}</span>
+                </div>
+            `;
+
+            saveForecastData();
+        }
+
+        function saveForecastData() {
+            const forecast = {
+                cash: document.getElementById('currentCash').value,
+                bank: document.getElementById('currentBank').value,
+                avgSales: document.getElementById('avgDailySales').value,
+                days: document.getElementById('daysUntilPayment').value,
+                upcomingExpenses: upcomingExpenses,
+                timestamp: new Date().toISOString()
+            };
+            localStorage.setItem('cashflowForecast', JSON.stringify(forecast));
+        }
+
+        function loadForecastData() {
+            const savedForecast = localStorage.getItem('cashflowForecast');
+            if (savedForecast) {
+                const forecast = JSON.parse(savedForecast);
+                document.getElementById('currentCash').value = forecast.cash || '';
+                document.getElementById('currentBank').value = forecast.bank || '';
+                document.getElementById('avgDailySales').value = forecast.avgSales || '';
+                document.getElementById('daysUntilPayment').value = forecast.days || '';
+                upcomingExpenses = forecast.upcomingExpenses || [];
+                displayUpcomingExpenses();
+            }
+        }
+
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
+        }
+
+        async function addExpense() {
+            const category = document.getElementById('expenseCategory').value;
+            const date = document.getElementById('expenseDate').value;
+            const amount = parseFloat(document.getElementById('expenseAmount').value);
+            const method = document.getElementById('expenseMethod').value;
+            const note = document.getElementById('expenseNote').value;
+
+            if (!date || !amount) {
+                alert('Vui lòng điền đầy đủ thông tin!');
+                return;
+            }
+
+            const expense = {
+                category,
+                date,
+                amount,
+                method,
+                note
+            };
+
+            try {
+                await supabaseRequest('expenses', 'POST', expense);
+                alert('Đã thêm chi phí!');
+                document.getElementById('expenseAmount').value = '';
+                document.getElementById('expenseNote').value = '';
+                loadExpenses();
+            } catch (error) {
+                alert('Lỗi: ' + error.message);
+            }
+        }
+
+        async function loadExpenses() {
+            try {
+                const expenses = await supabaseRequest('expenses?order=date.desc,created_at.desc&limit=30');
+                const list = document.getElementById('expenseList');
+                
+                if (!expenses || expenses.length === 0) {
+                    list.innerHTML = '<div class="empty-state">Chưa có chi phí nào</div>';
+                } else {
+                    let total = 0;
+                    list.innerHTML = expenses.map(e => {
+                        total += e.amount;
+                        return `
+                            <div class="item">
+                                <div class="item-content">
+                                    <div class="item-title">${getExpenseCategoryLabel(e.category)} - ${formatCurrency(e.amount)}</div>
+                                    <div class="item-meta">${e.date} | ${e.method === 'cash' ? 'Tiền mặt' : 'Chuyển khoản'} ${e.note ? '| ' + e.note : ''}</div>
+                                </div>
+                                <div class="item-actions">
+                                    <button onclick="deleteExpense(${e.id})">Xóa</button>
+                                </div>
+                            </div>
+                        `;
+                    }).join('') + `
+                        <div class="item" style="background: #f9f9f9; font-weight: 600;">
+                            <div class="item-content">
+                                <div class="item-title">Tổng chi phí</div>
+                            </div>
+                            <div style="font-size: 16px;">${formatCurrency(total)}</div>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error loading expenses:', error);
+            }
+
+            // Load saved forecast
+            loadForecastData();
+        }
+
+        function getExpenseCategoryLabel(category) {
+            const labels = {
+                electric: 'Điện',
+                salary: 'Lương',
+                beef: 'Bò',
+                sauce: 'Tương',
+                danang: 'Hàng Đà Nẵng',
+                cheese: 'Phô mai',
+                box: 'Hộp',
+                other: 'Khác'
+            };
+            return labels[category] || category;
+        }
+
+        async function deleteExpense(id) {
+            if (confirm('Xóa chi phí này?')) {
+                await supabaseRequest(`expenses?id=eq.${id}`, 'DELETE');
+                loadExpenses();
+            }
+        }
+
+        // Journal Management
+        async function addJournal() {
+            const title = document.getElementById('journalTitle').value;
+            const tag = document.getElementById('journalTag').value;
+            const date = document.getElementById('journalDate').value;
+            const content = document.getElementById('journalContent').value;
+
+            if (!title || !content) {
+                alert('Vui lòng điền tiêu đề và nội dung!');
+                return;
+            }
+
+            const journal = {
+                title,
+                tag,
+                date,
+                content
+            };
+
+            try {
+                await supabaseRequest('journals', 'POST', journal);
+                alert('Đã lưu nhật ký!');
+                document.getElementById('journalTitle').value = '';
+                document.getElementById('journalContent').value = '';
+                loadJournals();
+            } catch (error) {
+                alert('Lỗi: ' + error.message);
+            }
+        }
+
+        async function loadJournals() {
+            try {
+                const journals = await supabaseRequest('journals?order=date.desc,created_at.desc&limit=5');
+                const list = document.getElementById('journalList');
+                
+                if (!journals || journals.length === 0) {
+                    list.innerHTML = '<div class="empty-state">Chưa có nhật ký nào</div>';
+                } else {
+                    list.innerHTML = journals.map(j => `
+                        <div class="item">
+                            <div class="item-content">
+                                <div class="item-title">${j.title}</div>
+                                <div class="item-meta">${j.date} | ${getJournalTagLabel(j.tag)}</div>
+                                <div style="margin-top: 8px; color: #666; font-size: 14px;">
+                                    ${j.content.substring(0, 150)}${j.content.length > 150 ? '...' : ''}
+                                </div>
+                            </div>
+                            <div class="item-actions">
+                                <button onclick="viewJournal(${j.id}, \`${escapeHtml(j.title)}\`, \`${escapeHtml(j.content)}\`)">Xem</button>
+                                <button onclick="deleteJournal(${j.id})">Xóa</button>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            } catch (error) {
+                console.error('Error loading journals:', error);
+            }
+        }
+
+        function getJournalTagLabel(tag) {
+            const labels = {
+                idea: 'Ý tưởng kinh doanh',
+                marketing: 'Marketing',
+                lesson: 'Bài học cuộc sống',
+                reflection: 'Suy ngẫm',
+                analysis: 'Phân tích',
+                other: 'Khác'
+            };
+            return labels[tag] || tag;
+        }
+
+        function escapeHtml(text) {
+            return text.replace(/`/g, '\\`').replace(/\n/g, '\\n');
+        }
+
+        function viewJournal(id, title, content) {
+            alert(`${title}\n\n${content.replace(/\\n/g, '\n')}`);
+        }
+
+        async function deleteJournal(id) {
+            if (confirm('Xóa nhật ký này?')) {
+                await supabaseRequest(`journals?id=eq.${id}`, 'DELETE');
+                loadJournals();
+            }
+        }
+
+        // Load all data on init
+        function loadAllData() {
+            loadActivities();
+            loadHabits();
+        }
+
+        // Handle Enter key for password
+        document.getElementById('passwordInput')?.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') login();
+        });
+    </script>
+</body>
+</html>
