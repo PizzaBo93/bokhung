@@ -1904,6 +1904,15 @@
 
         // Thêm function này vào đây
         async function addExpense() {
+             // Kiểm tra xem có dữ liệu từ quick input không
+            const quickInput = document.getElementById('quickExpenseInput').value.trim();
+            
+            if (quickInput) {
+                // Nếu có quick input, parse và thêm
+                parseAndAddQuickExpense();
+                return;
+            }
+            
             const category = document.getElementById('expenseCategory').value;
             const date = document.getElementById('expenseDate').value;
             const amount = getNumericValue('expenseAmount');  
