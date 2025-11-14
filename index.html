@@ -753,7 +753,7 @@
         }
 
        .task-delete-btn {
-            padding: 4px 8px;
+            padding: 6px 12px;
             background: #ef5350;
             border: none;
             border-radius: 4px;
@@ -762,7 +762,8 @@
             color: white;
             transition: all 0.2s;
             font-weight: 500;
-            min-width: 50px;
+            width: auto;
+            flex-shrink: 0
         }
 
         .task-delete-btn:hover {
@@ -968,38 +969,37 @@
             <div class="card">
                 <h2>Dự Phóng Dòng Tiền</h2>
                 <div class="form-row">
-                    <div class="form-group">
-                        <label>Tiền mặt hiện tại</label>
-                        <input type="number" id="currentCash" placeholder="VNĐ" />
-                    </div>
-                    <div class="form-group">
-                        <label>Tiền bank hiện tại</label>
-                        <input type="number" id="currentBank" placeholder="VNĐ" />
-                    </div>
+                <div class="form-group">
+                    <label>Tiền mặt hiện tại</label>
+                    <input type="text" id="currentCash" placeholder="VNĐ" />
                 </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Sale trung bình/ngày</label>
-                        <input type="number" id="avgDailySales" placeholder="VNĐ" />
-                    </div>
-                    <div class="form-group">
-                        <label>Số ngày đến khi phải trả</label>
-                        <input type="number" id="daysUntilPayment" placeholder="Số ngày" />
-                    </div>
+                <div class="form-group">
+                    <label>Tiền bank hiện tại</label>
+                    <input type="text" id="currentBank" placeholder="VNĐ" />
                 </div>
-                
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Sale trung bình/ngày</label>
+                    <input type="text" id="avgDailySales" placeholder="VNĐ" />
+                </div>
+                <div class="form-group">
+                    <label>Số ngày đến khi phải trả</label>
+                    <input type="number" id="daysUntilPayment" placeholder="Số ngày" />
+                </div>
+            </div>                
                 <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #e0e0e0;">
                     <h3 style="font-size: 16px; margin-bottom: 16px;">Các khoản phải chi sắp tới</h3>
                     <div class="form-row">
-                        <div class="form-group">
-                            <label>Tên khoản chi</label>
-                            <input type="text" id="upcomingExpenseName" placeholder="Ví dụ: Lương nhân viên" />
-                        </div>
-                        <div class="form-group">
-                            <label>Số tiền</label>
-                            <input type="number" id="upcomingExpenseAmount" placeholder="VNĐ" />
-                        </div>
+                    <div class="form-group">
+                        <label>Tên khoản chi</label>
+                        <input type="text" id="upcomingExpenseName" placeholder="Ví dụ: Lương nhân viên" />
                     </div>
+                    <div class="form-group">
+                        <label>Số tiền</label>
+                        <input type="text" id="upcomingExpenseAmount" placeholder="VNĐ" />
+                    </div>
+                </div>
                     <div class="form-group">
                         <label>Ngày phải trả</label>
                         <input type="date" id="upcomingExpenseDate" />
@@ -1194,15 +1194,59 @@
         document.addEventListener('DOMContentLoaded', () => {
             setDefaultDates();
             checkLogin();
+            setupNumberFormatting();
         });
 
-        function setDefaultDates() {
+       function setDefaultDates() {
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('activityDate').value = today;
             document.getElementById('habitStartDate').value = today;
             document.getElementById('expenseDate').value = today;
             document.getElementById('journalDate').value = today;
             document.getElementById('upcomingExpenseDate').value = today;
+        }
+
+        // Number formatting functions
+        function setupNumberFormatting() {
+            const numberInputs = [
+                'currentCash',
+                'currentBank', 
+                'avgDailySales',
+                'upcomingExpenseAmount',
+                'expenseAmount'
+            ];
+            
+            numberInputs.forEach(id => {
+                const input = document.getElementById(id);
+                if (input) {
+                    input.addEventListener('input', formatNumberInput);
+                    input.addEventListener('focus', removeFormatting);
+                    input.addEventListener('blur', applyFormatting);
+                }
+            });
+        }
+
+        function formatNumberInput(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value) {
+                e.target.value = parseInt(value).toLocaleString('vi-VN');
+            }
+        }
+
+        function removeFormatting(e) {
+            e.target.value = e.target.value.replace(/\./g, '');
+        }
+
+        function applyFormatting(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value) {
+                e.target.value = parseInt(value).toLocaleString('vi-VN');
+            }
+        }
+
+        function getNumericValue(elementId) {
+            const value = document.getElementById(elementId).value.replace(/\./g, '');
+            return parseFloat(value) || 0;
         }
 
         // Login/Logout
@@ -1623,9 +1667,9 @@
         // Cashflow Management
         let upcomingExpenses = [];
 
-        function addUpcomingExpense() {
+        async function addUpcomingExpense() {
             const name = document.getElementById('upcomingExpenseName').value;
-            const amount = parseFloat(document.getElementById('upcomingExpenseAmount').value);
+            const amount = getNumericValue('upcomingExpenseAmount');  // Đổi dòng này
             const date = document.getElementById('upcomingExpenseDate').value;
 
             if (!name || !amount || !date) {
@@ -1633,23 +1677,57 @@
                 return;
             }
 
-            upcomingExpenses.push({ name, amount, date, id: Date.now() });
-            document.getElementById('upcomingExpenseName').value = '';
-            document.getElementById('upcomingExpenseAmount').value = '';
-            
-            displayUpcomingExpenses();
-            saveForecastData();
+            const expense = {
+                name,
+                amount,
+                date
+            };
+
+            try {
+                // Lưu vào Supabase
+                await supabaseRequest('forecast_expenses', 'POST', expense);
+                
+                showQuickNotification('✓ Đã thêm khoản chi!');
+                
+                // Clear form
+                document.getElementById('upcomingExpenseName').value = '';
+                document.getElementById('upcomingExpenseAmount').value = '';
+                
+                // Reload danh sách
+                await loadUpcomingExpenses();
+                displayTimeline();
+                
+            } catch (error) {
+                alert('Lỗi: ' + error.message);
+            }
+        }
+
+
+
+        async function loadUpcomingExpenses() {
+            try {
+                // Load từ Supabase
+                const expenses = await supabaseRequest('forecast_expenses?order=date.asc');
+                upcomingExpenses = expenses || [];
+                
+                displayUpcomingExpenses();
+                displayTimeline();
+                
+            } catch (error) {
+                console.error('Error loading upcoming expenses:', error);
+                upcomingExpenses = [];
+            }
         }
 
         function displayUpcomingExpenses() {
             const list = document.getElementById('upcomingExpensesList');
             
             if (upcomingExpenses.length === 0) {
-                list.innerHTML = '';
+                list.innerHTML = '<div style="text-align: center; color: #999; padding: 20px; font-size: 14px;">Chưa có khoản chi nào</div>';
                 return;
             }
 
-            const total = upcomingExpenses.reduce((sum, e) => sum + e.amount, 0);
+            const total = upcomingExpenses.reduce((sum, e) => sum + parseFloat(e.amount), 0);
             
             list.innerHTML = `
                 <div style="border: 1px solid #e0e0e0; border-radius: 6px; overflow: hidden;">
@@ -1659,7 +1737,7 @@
                                 <div style="font-weight: 500;">${e.name}</div>
                                 <div style="font-size: 13px; color: #666;">${formatCurrency(e.amount)} • ${e.date}</div>
                             </div>
-                            <button onclick="removeUpcomingExpense(${e.id})" style="padding: 4px 10px; font-size: 12px; background: #f5f5f5; border: 1px solid #ddd; border-radius: 4px; cursor: pointer; width: auto;">Xóa</button>
+                            <button onclick="removeUpcomingExpense(${e.id})" style="padding: 4px 10px; font-size: 12px; background: #ef5350; color: white; border: none; border-radius: 4px; cursor: pointer; width: auto; font-weight: 500; transition: all 0.2s;" onmouseover="this.style.background='#c62828'" onmouseout="this.style.background='#ef5350'">Xóa</button>
                         </div>
                     `).join('')}
                     <div style="display: flex; justify-content: space-between; padding: 12px; background: #f9f9f9; font-weight: 600;">
@@ -1670,18 +1748,31 @@
             `;
         }
 
-        function removeUpcomingExpense(id) {
-            upcomingExpenses = upcomingExpenses.filter(e => e.id !== id);
-            displayUpcomingExpenses();
-            saveForecastData();
+       async function removeUpcomingExpense(id) {
+            if (!confirm('Xóa khoản chi này?')) return;
+            
+            try {
+                // Xóa từ Supabase
+                await supabaseRequest(`forecast_expenses?id=eq.${id}`, 'DELETE');
+                
+                showQuickNotification('✓ Đã xóa khoản chi!');
+                
+                // Reload danh sách
+                await loadUpcomingExpenses();
+                
+            } catch (error) {
+                alert('Lỗi: ' + error.message);
+            }
         }
 
-        function calculateForecast() {
-            const cash = parseFloat(document.getElementById('currentCash').value) || 0;
-            const bank = parseFloat(document.getElementById('currentBank').value) || 0;
-            const avgSales = parseFloat(document.getElementById('avgDailySales').value) || 0;
+        async function calculateForecast() {
+            const cash = getNumericValue('currentCash');        // Đổi dòng này
+            const bank = getNumericValue('currentBank');        // Đổi dòng này
+            const avgSales = getNumericValue('avgDailySales');  // Đổi dòng này
             const days = parseFloat(document.getElementById('daysUntilPayment').value) || 0;
-            const totalExpenses = upcomingExpenses.reduce((sum, e) => sum + e.amount, 0);
+            
+            // Tính tổng chi từ array
+            const totalExpenses = upcomingExpenses.reduce((sum, e) => sum + parseFloat(e.amount), 0);
 
             const currentTotal = cash + bank;
             const projectedRevenue = avgSales * days;
@@ -1738,7 +1829,7 @@
 
         function displayTimeline() {
             if (upcomingExpenses.length === 0) {
-                document.getElementById('timelineContainer').innerHTML = '';
+                document.getElementById('timelineContainer').innerHTML = '<div style="text-align: center; color: #999; padding: 40px; font-size: 14px;">Chưa có khoản chi nào để hiển thị timeline</div>';
                 return;
             }
 
@@ -1780,13 +1871,13 @@
                 bank: document.getElementById('currentBank').value,
                 avgSales: document.getElementById('avgDailySales').value,
                 days: document.getElementById('daysUntilPayment').value,
-                upcomingExpenses: upcomingExpenses,
                 timestamp: new Date().toISOString()
             };
             localStorage.setItem('cashflowForecast', JSON.stringify(forecast));
         }
 
-        function loadForecastData() {
+        async function loadForecastData() {
+            // Load forecast info from localStorage
             const savedForecast = localStorage.getItem('cashflowForecast');
             if (savedForecast) {
                 const forecast = JSON.parse(savedForecast);
@@ -1794,26 +1885,32 @@
                 document.getElementById('currentBank').value = forecast.bank || '';
                 document.getElementById('avgDailySales').value = forecast.avgSales || '';
                 document.getElementById('daysUntilPayment').value = forecast.days || '';
-                upcomingExpenses = forecast.upcomingExpenses || [];
-                displayUpcomingExpenses();
-                displayTimeline();
             }
+            
+            // Load expenses from Supabase
+            await loadUpcomingExpenses();
         }
 
         function formatCurrency(amount) {
             return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
+        async function deleteExpense(id) {
+    if (confirm('Xóa chi phí này?')) {
+        await supabaseRequest(`expenses?id=eq.${id}`, 'DELETE');
+        loadExpenses();
+    }
+}
 
-            async function addExpense() {
+        // Thêm function này vào đây
+        async function addExpense() {
             const category = document.getElementById('expenseCategory').value;
             const date = document.getElementById('expenseDate').value;
-            const amount = parseFloat(document.getElementById('expenseAmount').value);
+            const amount = getNumericValue('expenseAmount');  
             const method = document.getElementById('expenseMethod').value;
             const note = document.getElementById('expenseNote').value;
 
-            if (!date || isNaN(amount)) {
+            if (!date || !amount) {  // Đổi điều kiện này
                 alert('Vui lòng điền đầy đủ thông tin!');
                 return;
             }
@@ -1830,8 +1927,6 @@
                 alert('Lỗi: ' + error.message);
             }
         }
-            });
-
             // Add quick expense input listener
     const quickInput = document.getElementById('quickExpenseInput');
     if (quickInput) {
