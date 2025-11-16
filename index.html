@@ -812,6 +812,116 @@
         .empty-tasks-text {
             font-size: 16px;
         }
+
+        /* Work Timeline Styles */
+        .work-day {
+            margin-bottom: 24px;
+            border-left: 3px solid #e0e0e0;
+            padding-left: 20px;
+        }
+
+        .work-day-header {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .work-day-header .day-badge {
+            background: #f0f0f0;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .work-day.today {
+            border-left-color: #333;
+        }
+
+        .work-day.today .work-day-header {
+            color: #333;
+        }
+
+        .work-day.today .day-badge {
+            background: #333;
+            color: white;
+        }
+
+        .work-item {
+            background: #f9f9f9;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 10px;
+            transition: all 0.2s;
+        }
+
+        .work-item:hover {
+            background: #f0f0f0;
+            transform: translateX(4px);
+        }
+
+        .work-item-content {
+            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .work-item-title {
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .work-item-time {
+            font-size: 13px;
+            color: #666;
+        }
+
+        .work-item-note {
+            font-size: 13px;
+            color: #999;
+            margin-top: 4px;
+        }
+
+        .work-delete-btn {
+            padding: 4px 8px;
+            background: #ef5350;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 500;
+            transition: all 0.2s;
+            flex-shrink: 0;
+            width: auto;
+            white-space: nowrap;
+        }
+
+        .work-delete-btn:hover {
+            background: #c62828;
+            transform: scale(1.05);
+        }
+
+        .empty-timeline {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+
+        .empty-timeline-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
         
     </style>
 </head>
@@ -862,54 +972,35 @@
             </div>
         </div>
 
-        <!-- Time Management Tab -->
+       <!-- Time Management Tab -->
       <div id="timeSection" class="section-hidden">
         <button class="back-button" onclick="showHome()">← Quay lại</button>
             <div class="card">
-                <h2>Ghi Nhận Hoạt Động</h2>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Loại hoạt động</label>
-                        <select id="activityType">
-                            <option value="work">Làm việc</option>
-                            <option value="study">Học tập</option>
-                            <option value="sleep">Ngủ</option>
-                            <option value="family">Gia đình</option>
-                            <option value="relax">Giải trí</option>
-                            <option value="exercise">Thể dục</option>
-                            <option value="other">Khác</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Ngày</label>
-                        <input type="date" id="activityDate" />
-                    </div>
+                <h2>Thêm Công Việc</h2>
+                <div class="form-group">
+                    <label>Tên công việc</label>
+                    <input type="text" id="workTitle" placeholder="Ví dụ: Họp team, Làm báo cáo..." />
                 </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <label>Từ giờ</label>
-                        <input type="time" id="activityStart" />
+                        <label>Ngày</label>
+                        <input type="date" id="workDate" />
                     </div>
                     <div class="form-group">
-                        <label>Đến giờ</label>
-                        <input type="time" id="activityEnd" />
+                        <label>Thời gian</label>
+                        <input type="time" id="workTime" />
                     </div>
                 </div>
                 <div class="form-group">
-                    <label>Ghi chú</label>
-                    <input type="text" id="activityNote" placeholder="Mô tả ngắn..." />
+                    <label>Ghi chú (tùy chọn)</label>
+                    <textarea id="workNote" placeholder="Mô tả chi tiết..." rows="3"></textarea>
                 </div>
-                <button class="btn-primary" onclick="addActivity()">Thêm Hoạt Động</button>
+                <button class="btn-primary" onclick="addWork()">Thêm Công Việc</button>
             </div>
 
             <div class="card">
-                <h2>Thống Kê Thời Gian</h2>
-                <div class="stats-grid" id="timeStats"></div>
-            </div>
-
-            <div class="card">
-                <h2>Lịch Sử Hoạt Động</h2>
-                <div class="activity-list" id="activityList"></div>
+                <h2>📅 Timeline 7 Ngày Tới</h2>
+                <div id="workTimeline"></div>
             </div>
         </div>
 
@@ -1199,7 +1290,7 @@
 
        function setDefaultDates() {
             const today = new Date().toISOString().split('T')[0];
-            document.getElementById('activityDate').value = today;
+            document.getElementById('workDate').value = today;
             document.getElementById('habitStartDate').value = today;
             document.getElementById('expenseDate').value = today;
             document.getElementById('journalDate').value = today;
@@ -1304,7 +1395,7 @@
 
             document.getElementById(section + 'Section').classList.remove('section-hidden');
             
-            if (section === 'time') loadActivities();
+            if (section === 'time')  loadWorks();
             if (section === 'habits') loadHabits();
             if (section === 'cashflow') {
                 loadExpenses();
@@ -1372,124 +1463,126 @@
             }
 
         // Time Management
-        async function addActivity() {
-            const type = document.getElementById('activityType').value;
-            const date = document.getElementById('activityDate').value;
-            const start = document.getElementById('activityStart').value;
-            const end = document.getElementById('activityEnd').value;
-            const note = document.getElementById('activityNote').value;
+        // Work Management (replacing old Time Management)
+        async function addWork() {
+            const title = document.getElementById('workTitle').value;
+            const date = document.getElementById('workDate').value;
+            const time = document.getElementById('workTime').value;
+            const note = document.getElementById('workNote').value;
 
-            if (!date || !start || !end) {
+            if (!title || !date || !time) {
                 alert('Vui lòng điền đầy đủ thông tin!');
                 return;
             }
 
-            const startTime = new Date(`${date}T${start}`);
-            const endTime = new Date(`${date}T${end}`);
-            let hours = (endTime - startTime) / (1000 * 60 * 60);
-            
-            if (hours < 0) hours += 24;
-
-            const activity = {
-                type,
+            const work = {
+                title,
                 date,
-                start_time: start,
-                end_time: end,
-                hours: hours.toFixed(2),
+                time,
                 note
             };
 
             try {
-                await supabaseRequest('activities', 'POST', activity);
-                alert('Đã thêm hoạt động!');
-                document.getElementById('activityNote').value = '';
-                loadActivities();
+                await supabaseRequest('works', 'POST', work);
+                showQuickNotification('✓ Đã thêm công việc!');
+                document.getElementById('workTitle').value = '';
+                document.getElementById('workNote').value = '';
+                loadWorks();
             } catch (error) {
                 alert('Lỗi: ' + error.message);
             }
         }
 
-       let currentDay = new Date().toISOString().split('T')[0]; // Lưu ngày hiện tại
-
-        async function loadActivities() {
+        async function loadWorks() {
             try {
-                const today = new Date().toISOString().split('T')[0]; // yyyy-mm-dd
-                currentDay = today; // Cập nhật ngày hiện tại
-
-                const activities = await supabaseRequest(`activities?date=eq.${today}&order=start_time.desc`);
-                const list = document.getElementById('activityList');
+                // Get today and 6 days ahead
+                const today = new Date();
+                const endDate = new Date();
+                endDate.setDate(endDate.getDate() + 6);
                 
-                if (!activities || activities.length === 0) {
-                    list.innerHTML = '<div class="empty-state">Chưa có hoạt động nào hôm nay</div>';
-                } else {
-                    list.innerHTML = activities.map(a => `
-                        <div class="item">
-                            <div class="item-content">
-                                <div class="item-title">${getActivityLabel(a.type)} - ${a.hours}h</div>
-                                <div class="item-meta">${a.date} | ${a.start_time} - ${a.end_time} ${a.note ? '| ' + a.note : ''}</div>
-                            </div>
-                            <div class="item-actions">
-                                <button onclick="deleteActivity(${a.id})">Xóa</button>
-                            </div>
+                const startStr = today.toISOString().split('T')[0];
+                const endStr = endDate.toISOString().split('T')[0];
+                
+                // Load works for the next 7 days
+                const works = await supabaseRequest(`works?date=gte.${startStr}&date=lte.${endStr}&order=date.asc,time.asc`);
+                
+                const timeline = document.getElementById('workTimeline');
+                
+                if (!works || works.length === 0) {
+                    timeline.innerHTML = `
+                        <div class="empty-timeline">
+                            <div class="empty-timeline-icon">📅</div>
+                            <div class="empty-timeline-text">Chưa có công việc nào trong 7 ngày tới</div>
                         </div>
-                    `).join('');
+                    `;
+                    return;
                 }
-
-                calculateTimeStats(activities);
+                
+                // Group works by date
+                const worksByDate = {};
+                works.forEach(work => {
+                    if (!worksByDate[work.date]) {
+                        worksByDate[work.date] = [];
+                    }
+                    worksByDate[work.date].push(work);
+                });
+                
+                // Generate timeline for 7 days
+                let timelineHTML = '';
+                for (let i = 0; i < 7; i++) {
+                    const date = new Date();
+                    date.setDate(date.getDate() + i);
+                    const dateStr = date.toISOString().split('T')[0];
+                    const dayWorks = worksByDate[dateStr] || [];
+                    
+                    const dayNames = ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'];
+                    const dayName = dayNames[date.getDay()];
+                    
+                    const isToday = i === 0;
+                    const dayLabel = isToday ? 'Hôm nay' : 
+                                    i === 1 ? 'Ngày mai' : 
+                                    `${date.getDate()}/${date.getMonth() + 1}`;
+                    
+                    timelineHTML += `
+                        <div class="work-day ${isToday ? 'today' : ''}">
+                            <div class="work-day-header">
+                                <span>${dayName}</span>
+                                <span class="day-badge">${dayLabel}</span>
+                            </div>
+                    `;
+                    
+                    if (dayWorks.length === 0) {
+                        timelineHTML += '<div style="color: #999; font-size: 14px; margin-left: 4px;">Không có công việc</div>';
+                    } else {
+                        dayWorks.forEach(work => {
+                            timelineHTML += `
+                                <div class="work-item">
+                                    <div class="work-item-content">
+                                        <div class="work-item-title">${work.title}</div>
+                                        <div class="work-item-time">⏰ ${work.time}</div>
+                                        ${work.note ? `<div class="work-item-note">${work.note}</div>` : ''}
+                                    </div>
+                                    <button class="work-delete-btn" onclick="deleteWork(${work.id})">Xóa</button>
+                                </div>
+                            `;
+                        });
+                    }
+                    
+                    timelineHTML += '</div>';
+                }
+                
+                timeline.innerHTML = timelineHTML;
+                
             } catch (error) {
-                console.error('Error loading activities:', error);
+                console.error('Error loading works:', error);
             }
         }
 
-        // Kiểm tra ngày mới mỗi phút
-        setInterval(() => {
-            const today = new Date().toISOString().split('T')[0];
-            if (today !== currentDay) {
-                loadActivities(); // Tự refresh khi qua ngày mới
-            }
-        }, 60 * 1000); // kiểm tra mỗi 60 giây
-
-
-        function calculateTimeStats(activities) {
-            const stats = {};
-            let total = 0;
-
-            activities.forEach(a => {
-                if (!stats[a.type]) stats[a.type] = 0;
-                stats[a.type] += parseFloat(a.hours);
-                total += parseFloat(a.hours);
-            });
-
-            const statsDiv = document.getElementById('timeStats');
-            statsDiv.innerHTML = Object.entries(stats).map(([type, hours]) => {
-                const percent = ((hours / total) * 100).toFixed(1);
-                return `
-                    <div class="stat-card">
-                        <div class="stat-value">${hours.toFixed(1)}h</div>
-                        <div class="stat-label">${getActivityLabel(type)}</div>
-                        <div class="stat-label">${percent}%</div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function getActivityLabel(type) {
-            const labels = {
-                work: 'Làm việc',
-                study: 'Học tập',
-                sleep: 'Ngủ',
-                family: 'Gia đình',
-                relax: 'Giải trí',
-                exercise: 'Thể dục',
-                other: 'Khác'
-            };
-            return labels[type] || type;
-        }
-
-        async function deleteActivity(id) {
-            if (confirm('Xóa hoạt động này?')) {
-                await supabaseRequest(`activities?id=eq.${id}`, 'DELETE');
-                loadActivities();
+        async function deleteWork(id) {
+            if (confirm('Xóa công việc này?')) {
+                await supabaseRequest(`works?id=eq.${id}`, 'DELETE');
+                showQuickNotification('✓ Đã xóa công việc!');
+                loadWorks();
             }
         }
 
@@ -1912,7 +2005,7 @@
                 parseAndAddQuickExpense();
                 return;
             }
-            
+
             const category = document.getElementById('expenseCategory').value;
             const date = document.getElementById('expenseDate').value;
             const amount = getNumericValue('expenseAmount');  
