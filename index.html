@@ -1171,6 +1171,12 @@
                 <div class="amount" id="monthTotal">0 ₫</div>
             </div>
 
+             <!-- Expense Chart -->
+            <div class="card">
+                <h2>📊 Chi Phí 10 Ngày Gần Nhất</h2>
+                <canvas id="expenseChart" style="max-height: 300px;"></canvas>
+            </div>
+
             <!-- Today's Expenses -->
             <div class="card today-expenses">
                 <h2>💸 Chi Phí Hôm Nay</h2>
@@ -1274,12 +1280,14 @@
         </div>
         </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         const SUPABASE_URL = 'https://oindszamzepyplumfxga.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9pbmRzemFtemVweXBsdW1meGdhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMwNDM1MDEsImV4cCI6MjA3ODYxOTUwMX0.ONATfa2UPTAhuwuAovbu36bWCPjKzVPIgtA0RiIVEgM';
         const HARDCODED_PASSWORD = 'dau2024';
 
         let currentUser = null;
+        let expenseChart = null;
 
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
@@ -2209,6 +2217,11 @@ const style = document.createElement('style');
             
             document.getElementById('monthTotal').textContent = formatCurrency(monthTotal);
             
+            // Draw chart
+            drawExpenseChart(expenses);
+            
+
+            
             
         } catch (error) {
             console.error('Error loading expenses:', error);
@@ -2216,6 +2229,95 @@ const style = document.createElement('style');
     }
             loadForecastData();
         
+        function drawExpenseChart(expenses) {
+        // Get last 10 days
+        const last10Days = [];
+        const today = new Date();
+        
+        for (let i = 9; i >= 0; i--) {
+            const date = new Date();
+            date.setDate(today.getDate() - i);
+            last10Days.push(date.toISOString().split('T')[0]);
+        }
+        
+        // Group expenses by date and sum amounts
+        const expensesByDate = {};
+        last10Days.forEach(date => {
+            expensesByDate[date] = 0;
+        });
+        
+        expenses.forEach(expense => {
+            if (expensesByDate.hasOwnProperty(expense.date)) {
+                expensesByDate[expense.date] += expense.amount;
+            }
+        });
+        
+        // Prepare chart data
+        const labels = last10Days.map(date => {
+            const d = new Date(date);
+            return `${d.getDate()}/${d.getMonth() + 1}`;
+        });
+        
+        const data = last10Days.map(date => expensesByDate[date]);
+        
+        // Destroy existing chart if exists
+        if (expenseChart) {
+            expenseChart.destroy();
+        }
+        
+        // Create chart
+        const ctx = document.getElementById('expenseChart').getContext('2d');
+        expenseChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Chi phí (VNĐ)',
+                    data: data,
+                    borderColor: '#ef5350',
+                    backgroundColor: 'rgba(239, 83, 80, 0.1)',
+                    tension: 0.4,
+                    fill: true,
+                    pointRadius: 4,
+                    pointHoverRadius: 6,
+                    pointBackgroundColor: '#ef5350',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return formatCurrency(context.parsed.y);
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return (value / 1000000).toFixed(1) + 'tr';
+                            }
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+    }
 
         function getExpenseCategoryLabel(category) {
             const labels = {
