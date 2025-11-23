@@ -551,7 +551,7 @@
             color: #333;
         }
 
-       .back-button {
+          .back-button {
             padding: 10px 20px;
             background: #333;
             color: white;
@@ -577,7 +577,6 @@
         .back-button:active {
             transform: translateX(-2px);
         }
-
 
         .section-hidden {
             display: none;
@@ -939,6 +938,270 @@
             opacity: 0.5;
         }
         
+        /* Journal Styles */
+        .journal-write-area {
+            background: white;
+            border-radius: 12px;
+            padding: 0;
+            margin-bottom: 40px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+
+        .journal-header-input {
+            padding: 24px 24px 20px 24px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .journal-title-input {
+            width: 100%;
+            border: none;
+            font-size: 24px;
+            font-weight: 600;
+            padding: 0;
+            margin-bottom: 16px;
+            outline: none;
+            color: #333;
+        }
+
+        .journal-title-input::placeholder {
+            color: #ccc;
+        }
+
+        .journal-meta-row {
+            display: flex;
+            gap: 12px;
+        }
+
+        .journal-date-input {
+            flex: 1;
+            padding: 10px 14px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .journal-date-input:focus {
+            border-color: #333;
+            box-shadow: 0 0 0 3px rgba(51,51,51,0.1);
+        }
+
+        .journal-tag-select {
+            flex: 1;
+            padding: 10px 14px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .journal-tag-select:focus {
+            border-color: #333;
+            box-shadow: 0 0 0 3px rgba(51,51,51,0.1);
+        }
+
+        .journal-content-input {
+            width: 100%;
+            min-height: 400px;
+            padding: 24px;
+            border: none;
+            font-size: 16px;
+            line-height: 1.8;
+            resize: vertical;
+            outline: none;
+            font-family: inherit;
+            color: #333;
+        }
+
+        .journal-content-input::placeholder {
+            color: #ccc;
+        }
+
+        .journal-actions {
+            padding: 16px 24px;
+            background: #fafafa;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .journal-edit-indicator {
+            color: #f59e0b;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .journal-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-save {
+            padding: 12px 24px;
+            background: #333;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .btn-save:hover {
+            background: #555;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .btn-cancel {
+            padding: 12px 24px;
+            background: white;
+            color: #666;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-cancel:hover {
+            background: #f5f5f5;
+            border-color: #999;
+        }
+
+        .journal-list-section {
+            margin-top: 20px;
+        }
+
+        .journal-list-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .journal-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+            transition: all 0.3s;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .journal-card:hover {
+            border-color: #333;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+
+        .journal-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .journal-card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            flex: 1;
+        }
+
+        .journal-card-tag {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 13px;
+            background: #f0f0f0;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .journal-card-date {
+            font-size: 13px;
+            color: #999;
+            margin-bottom: 12px;
+        }
+
+        .journal-card-preview {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+
+        .journal-card-actions {
+            display: flex;
+            gap: 8px;
+            padding-top: 12px;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .journal-btn {
+            padding: 6px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .journal-btn-view {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .journal-btn-view:hover {
+            background: #bbdefb;
+        }
+
+        .journal-btn-edit {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+
+        .journal-btn-edit:hover {
+            background: #ffe0b2;
+        }
+
+        .journal-btn-delete {
+            background: #ffebee;
+            color: #c62828;
+            margin-left: auto;
+        }
+
+        .journal-btn-delete:hover {
+            background: #ffcdd2;
+        }
+
+        @media (max-width: 768px) {
+            .journal-title-input {
+                font-size: 20px;
+            }
+            
+            .journal-content-input {
+                min-height: 300px;
+                font-size: 15px;
+            }
+            
+            .journal-meta-row {
+                flex-direction: column;
+            }
+        }
     </style>
 </head>
 <body>
@@ -1203,40 +1466,46 @@
     </div>
 </div>
         <!-- Journal Tab -->
-       <div id="journalSection" class="section-hidden">
-    <button class="back-button" onclick="showHome()">← Quay lại</button>
-            <div class="card">
-                <h2>Viết Nhật Ký</h2>
-                <div class="form-group">
-                    <label>Tiêu đề</label>
-                    <input type="text" id="journalTitle" placeholder="Chủ đề hôm nay..." />
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Tag</label>
-                        <select id="journalTag">
-                            <option value="idea">Ý tưởng kinh doanh</option>
-                            <option value="marketing">Marketing</option>
-                            <option value="lesson">Bài học cuộc sống</option>
-                            <option value="reflection">Suy ngẫm</option>
-                            <option value="analysis">Phân tích</option>
-                            <option value="other">Khác</option>
+        <div id="journalSection" class="section-hidden">
+            <button class="back-button" onclick="showHome()">← Quay lại</button>
+            
+            <!-- Writing Area -->
+            <div class="journal-write-area">
+                <div class="journal-header-input">
+                    <input type="text" id="journalTitle" placeholder="Tiêu đề nhật ký..." class="journal-title-input" />
+                    <div class="journal-meta-row">
+                        <input type="date" id="journalDate" class="journal-date-input" />
+                        <select id="journalTag" class="journal-tag-select">
+                            <option value="idea">💡 Ý tưởng</option>
+                            <option value="marketing">📢 Marketing</option>
+                            <option value="lesson">📖 Bài học</option>
+                            <option value="reflection">💭 Suy ngẫm</option>
+                            <option value="analysis">📊 Phân tích</option>
+                            <option value="other">📝 Khác</option>
                         </select>
                     </div>
-                    <div class="form-group">
-                        <label>Ngày</label>
-                        <input type="date" id="journalDate" />
+                </div>
+                
+                <textarea id="journalContent" class="journal-content-input" placeholder="Bắt đầu viết...
+
+Hôm nay là một ngày..."></textarea>
+                
+                <div class="journal-actions">
+                    <div class="journal-edit-indicator">
+                        <span id="editingIndicator" style="display: none;">✏️ Đang chỉnh sửa</span>
+                    </div>
+                    <div class="journal-buttons">
+                        <button class="btn-cancel" onclick="cancelEditJournal()" id="cancelJournalBtn" style="display: none;">Hủy</button>
+                        <button class="btn-save" onclick="addJournal()" id="saveJournalBtn">
+                            <span>💾</span> Lưu Nhật Ký
+                        </button>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label>Nội dung</label>
-                    <textarea id="journalContent" placeholder="Viết suy nghĩ của bạn..." style="min-height: 200px;"></textarea>
-                </div>
-                <button class="btn-primary" onclick="addJournal()">Lưu Nhật Ký</button>
             </div>
 
-             <div class="card">
-                <h2>Nhật Ký Của Tôi</h2>
+            <!-- Journal List -->
+            <div class="journal-list-section">
+                <h2 class="journal-list-title">📚 Nhật Ký Của Tôi</h2>
                 <div class="journal-list" id="journalList"></div>
             </div>
         </div>
@@ -1304,6 +1573,7 @@
 
         let currentUser = null;
         let expenseChart = null;
+        let editingJournalId = null;
 
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
@@ -2246,7 +2516,7 @@ const style = document.createElement('style');
             loadForecastData();
         
         function drawExpenseChart(expenses) {
-        // Get last 10 days
+        // Get last 7 days
         const last10Days = [];
         const today = new Date();
         
@@ -2376,39 +2646,121 @@ const style = document.createElement('style');
             };
 
             try {
-                await supabaseRequest('journals', 'POST', journal);
-                alert('Đã lưu nhật ký!');
-                document.getElementById('journalTitle').value = '';
-                document.getElementById('journalContent').value = '';
+                if (editingJournalId) {
+                    // Update existing journal
+                    await supabaseRequest(`journals?id=eq.${editingJournalId}`, 'PATCH', journal);
+                    showQuickNotification('✓ Đã cập nhật nhật ký!');
+                } else {
+                    // Create new journal
+                    await supabaseRequest('journals', 'POST', journal);
+                    showQuickNotification('✓ Đã lưu nhật ký!');
+                }
+                
+                cancelEditJournal();
                 loadJournals();
             } catch (error) {
                 alert('Lỗi: ' + error.message);
             }
         }
 
+        async function editJournal(id) {
+            try {
+                const journals = await supabaseRequest(`journals?id=eq.${id}`);
+                const journal = journals[0];
+                
+                if (!journal) {
+                    alert('Không tìm thấy nhật ký!');
+                    return;
+                }
+                
+                // Fill form with journal data
+                document.getElementById('journalTitle').value = journal.title;
+                document.getElementById('journalTag').value = journal.tag;
+                document.getElementById('journalDate').value = journal.date;
+                document.getElementById('journalContent').value = journal.content;
+                
+                // Set editing mode
+                editingJournalId = id;
+                
+                // Update UI for editing mode
+                const saveBtn = document.getElementById('saveJournalBtn');
+                saveBtn.innerHTML = '<span>✏️</span> Cập Nhật';
+                
+                document.getElementById('cancelJournalBtn').style.display = 'inline-block';
+                document.getElementById('editingIndicator').style.display = 'inline-block';
+                
+                // Scroll to top smoothly
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                
+                // Focus on title input
+                setTimeout(() => {
+                    document.getElementById('journalTitle').focus();
+                }, 300);
+                
+                showQuickNotification('📝 Đang chỉnh sửa nhật ký');
+            } catch (error) {
+                alert('Lỗi: ' + error.message);
+            }
+        }
+
+        function cancelEditJournal() {
+            // Reset editing state
+            editingJournalId = null;
+            
+            // Clear form
+            document.getElementById('journalTitle').value = '';
+            document.getElementById('journalContent').value = '';
+            
+            // Reset date to today
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('journalDate').value = today;
+            
+            // Reset UI
+            const saveBtn = document.getElementById('saveJournalBtn');
+            saveBtn.innerHTML = '<span>💾</span> Lưu Nhật Ký';
+            
+            document.getElementById('cancelJournalBtn').style.display = 'none';
+            document.getElementById('editingIndicator').style.display = 'none';
+            
+            showQuickNotification('✓ Đã hủy chỉnh sửa');
+        }
+
         async function loadJournals() {
             try {
-                const journals = await supabaseRequest('journals?order=date.desc,created_at.desc&limit=5');
+                const journals = await supabaseRequest('journals?order=date.desc,created_at.desc&limit=10');
                 const list = document.getElementById('journalList');
                 
                 if (!journals || journals.length === 0) {
-                    list.innerHTML = '<div class="empty-state">Chưa có nhật ký nào</div>';
+                    list.innerHTML = '<div class="empty-state">Chưa có nhật ký nào. Hãy viết nhật ký đầu tiên! ✨</div>';
                 } else {
-                    list.innerHTML = journals.map(j => `
-                        <div class="item">
-                            <div class="item-content">
-                                <div class="item-title">${j.title}</div>
-                                <div class="item-meta">${j.date} | ${getJournalTagLabel(j.tag)}</div>
-                                <div style="margin-top: 8px; color: #666; font-size: 14px;">
-                                    ${j.content.substring(0, 150)}${j.content.length > 150 ? '...' : ''}
+                    list.innerHTML = journals.map(j => {
+                        const tagLabels = {
+                            idea: '💡 Ý tưởng',
+                            marketing: '📢 Marketing',
+                            lesson: '📖 Bài học',
+                            reflection: '💭 Suy ngẫm',
+                            analysis: '📊 Phân tích',
+                            other: '📝 Khác'
+                        };
+                        
+                        return `
+                            <div class="journal-card">
+                                <div class="journal-card-header">
+                                    <div class="journal-card-title">${j.title}</div>
+                                    <div class="journal-card-tag">${tagLabels[j.tag] || j.tag}</div>
+                                </div>
+                                <div class="journal-card-date">📅 ${j.date}</div>
+                                <div class="journal-card-preview">
+                                    ${j.content.substring(0, 200)}${j.content.length > 200 ? '...' : ''}
+                                </div>
+                                <div class="journal-card-actions">
+                                    <button class="journal-btn journal-btn-view" onclick="viewJournal(${j.id}, \`${escapeHtml(j.title)}\`, \`${escapeHtml(j.content)}\`)">👁️ Xem</button>
+                                    <button class="journal-btn journal-btn-edit" onclick="editJournal(${j.id})">✏️ Sửa</button>
+                                    <button class="journal-btn journal-btn-delete" onclick="deleteJournal(${j.id})">🗑️ Xóa</button>
                                 </div>
                             </div>
-                            <div class="item-actions">
-                                <button onclick="viewJournal(${j.id}, \`${escapeHtml(j.title)}\`, \`${escapeHtml(j.content)}\`)">Xem</button>
-                                <button onclick="deleteJournal(${j.id})">Xóa</button>
-                            </div>
-                        </div>
-                    `).join('');
+                        `;
+                    }).join('');
                 }
             } catch (error) {
                 console.error('Error loading journals:', error);
