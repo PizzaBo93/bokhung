@@ -2829,42 +2829,42 @@ const style = document.createElement('style');
             }
 
             async function loadTasks() {
-                try {
-                    const today = new Date().toISOString().split('T')[0];
-                    
-                    // Delete completed tasks from previous days
-                    const allTasks = await supabaseRequest('tasks?order=created_at.desc');
-                    for (const task of allTasks) {
-                        if (task.completed && task.created_date < today) {
-                            await supabaseRequest(`tasks?id=eq.${task.id}`, 'DELETE');
-                        }
-                    }
-                    
-                    // Load current tasks
-                    const tasks = await supabaseRequest('tasks?created_date=eq.' + today + '&order=completed.asc,priority.desc,created_at.desc');
-                    const list = document.getElementById('taskList');
-                    
-                    if (!tasks || tasks.length === 0) {
-                        list.innerHTML = `
-                            <div class="empty-tasks">
-                                <div class="empty-tasks-icon">✨</div>
-                                <div class="empty-tasks-text">Chưa có task nào. Hãy thêm task đầu tiên!</div>
-                            </div>
-                        `;
-                    } else {
-                        list.innerHTML = tasks.map(task => renderTask(task)).join('');
-                    }
-                    
-                    // Update stats
-                    const completed = tasks.filter(t => t.completed).length;
-                    const pending = tasks.filter(t => !t.completed).length;
-                    document.getElementById('taskTotal').textContent = tasks.length;
-                    document.getElementById('taskCompleted').textContent = completed;
-                    document.getElementById('taskPending').textContent = pending;
-                } catch (error) {
-                    console.error('Error loading tasks:', error);
-                }
+    try {
+        const today = new Date().toISOString().split('T')[0];
+        
+        // Delete ONLY completed tasks from previous days
+        const allTasks = await supabaseRequest('tasks?order=created_at.desc');
+        for (const task of allTasks) {
+            if (task.completed && task.created_date < today) {
+                await supabaseRequest(`tasks?id=eq.${task.id}`, 'DELETE');
             }
+        }
+        
+        // Load ALL tasks (không filter theo ngày nữa)
+        const tasks = await supabaseRequest('tasks?order=completed.asc,priority.desc,created_at.desc');
+        const list = document.getElementById('taskList');
+        
+        if (!tasks || tasks.length === 0) {
+            list.innerHTML = `
+                <div class="empty-tasks">
+                    <div class="empty-tasks-icon">✨</div>
+                    <div class="empty-tasks-text">Chưa có task nào. Hãy thêm task đầu tiên!</div>
+                </div>
+            `;
+        } else {
+            list.innerHTML = tasks.map(task => renderTask(task)).join('');
+        }
+        
+        // Update stats
+        const completed = tasks.filter(t => t.completed).length;
+        const pending = tasks.filter(t => !t.completed).length;
+        document.getElementById('taskTotal').textContent = tasks.length;
+        document.getElementById('taskCompleted').textContent = completed;
+        document.getElementById('taskPending').textContent = pending;
+    } catch (error) {
+        console.error('Error loading tasks:', error);
+    }
+}
 
             function renderTask(task) {
                 const priorityLabel = {
